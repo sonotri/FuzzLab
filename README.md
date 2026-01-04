@@ -1,9 +1,17 @@
 ### FuzzLab
 
-각자의 브랜치에 코드 업로드 해주시고, 테스트가 필요할 경우 `dev` 브랜치에서 진행해주세요!
+백엔드 파이프라인 연동 & Open-webUI 연결은 아래 명령어 참고하시면 됩니다.
 
-- 프론트는 `git checkout front` 명령어로 front 브랜치에서 작업
-- 백은 `git checkout back` 명령어로 back 브랜치에서 작업
-- 프론트와 백 통합 개발은 `dev` 브랜치에서 진행
-- 개발 완료 후 프론트+백의 결과물을 `main`브랜치로 옮겨 완성할 예정
-- 테스트 커밋
+- Terminal 1: `uvicorn backend.app.main:app --reload --host 0.0.0.0 --port 8000`
+- Terminal 2: `celery -A backend.app.celery_app.celery_app worker --loglevel=INFO`
+- Terminal 3: `ollama serve`
+- Terminal 4: `docker run -d \
+  --name open-webui \
+  --network host \
+  -e OLLAMA_BASE_URL=http://127.0.0.1:11434 \
+  -v open-webui:/app/backend/data \
+  --restart unless-stopped \
+  ghcr.io/open-webui/open-webui:main
+
+`
+접속은 http://localhost:8080
